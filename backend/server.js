@@ -34,7 +34,7 @@ app.post('/register', async(req, res)=> {
     // Hash the user's password 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await db.query('INSERT INTO users (name, email, password) VALUES ($1, $2, $3)', [name, email, hashedPassword])
+    await db.query('INSERT INTO users (name, email, password) VALUES ($1, $2, $3)', [name, email, hashedPassword]);
     return res.status(200).json({ message: 'User registration successfull'});
   } catch(err) {
     console.log(err);
