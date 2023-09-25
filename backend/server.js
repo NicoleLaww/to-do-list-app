@@ -38,12 +38,12 @@ app.post('/register', async(req, res)=> {
     return res.status(200).json({ message: 'User registration successfull'});
   } catch(err) {
     console.log(err);
-    return res.status(500).json({ error: 'An error occured...'});
+    return res.status(500).json({ error: 'An error occured...', errorMessage: err.message });
   }
 });
 
-// Set the server's listening port to 3000
-const PORT = 3000;
+// Set the server's listening port 
+const PORT = 8080;
 
 // Start the Express server and listen on the specified port 
 app.listen(PORT, () => {
