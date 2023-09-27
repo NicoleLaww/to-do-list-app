@@ -1,15 +1,24 @@
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import RegistrationForm from './components/RegistrationForm';
+import Login from './components/Login';
 
 
 function App() {
   return (
-    <div className="App">
-      <h1>The To Do List App</h1>
-      <NavBar />
-      <RegistrationForm />
-    </div>
+    <Router>
+      <div className="App">
+        <h1>
+          <a href='/'>The To Do List App</a>
+        </h1>
+        <NavBar />
+        <Routes>
+            <Route path="/register" element={<RegistrationForm />} /> 
+            <Route path="/login" element={<Login />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
