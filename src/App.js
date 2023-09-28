@@ -14,6 +14,7 @@ function App() {
         </h1>
         <NavBar />
         <Routes>
+            <Route path="/"/> 
             <Route path="/register" element={<RegistrationForm />} /> 
             <Route path="/login" element={<Login />} />
         </Routes>

@@ -21,6 +21,7 @@ function RegistrationForm() {
 
 const handleInputChange = (e) => {
   const {name, value } = e.target;
+  // console.log('Input change:', name, value)
 
   // Update the formData state
   setFormData({
@@ -59,9 +60,15 @@ const handleSubmit = async (e) => {
     return;
   }
 
+  // console.log('Request Payload:', JSON.stringify(formData));
+
+  const backendUrl = 'http://localhost:8080';
   try {
-    const response = await fetch('/register', {
+    const response = await fetch(`${backendUrl}/register`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', 
+      },
       body: JSON.stringify(formData),
     }); 
     

@@ -16,29 +16,38 @@ function LoginForm() {
   const handleInputChange = (e) => {
     const {name, value} = e.target;
 
+    console.log('Input Change:', name, value);
+
     setFormData({
       ...formData, 
       [name]: value,
-    })
+    });
   }
 
   const handleSubmit = async(e) => {
     e.preventDefault();
 
     if(!formData.email) {
-      setFormErrors({...formErrors, email: 'Email is required..'})
+      setFormErrors({...formErrors, email: 'Email is required..'});
     }
+
     if(!formData.password) {
-      setFormErrors({...formErrors, password: 'Password is required..'})
+      setFormErrors({...formErrors, password: 'Password is required..'});
     }
 
     if(formErrors.email || formErrors.password) {
       return;
     }
 
+    const backendUrl = 'http://localhost:8080';
+    
     try {
-      const response = await fetch('/login', {
+      // console.log('Request Payload:', JSON.stringify(formData));
+      const response = await fetch(`${backendUrl}/login`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(formData),
       });
 
