@@ -29,6 +29,7 @@ const handleInputChange = (e) => {
     [name]: value, 
   })
 
+  // clears form errors when user types in field again, don't have to submit 
   setFormErrors({
     ...formErrors, 
     [name]: '',
@@ -38,6 +39,7 @@ const handleInputChange = (e) => {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
+  // clears any existing form errors
   setFormErrors({
     name: '',
     email: '', 
@@ -56,7 +58,7 @@ const handleSubmit = async (e) => {
     setFormErrors({...formErrors, password: 'Password is required..'})
   }
 
-  if (formErrors.name || formErrors.email || formErrors.password){
+  if (formErrors.name !== '' || formErrors.email !== '' || formErrors.password !== ''){
     return;
   }
 
@@ -73,9 +75,11 @@ const handleSubmit = async (e) => {
     }); 
     
     if (response.ok) {
+      // redirect to new URL 
       window.location.href = '/login';
     } else {
       const data = await response.json();
+      // this ensure there is something in data, can't be null or undefined 
       if(data && data.error) {
         setFormErrors({...formErrors, serverError: data.error});
       }

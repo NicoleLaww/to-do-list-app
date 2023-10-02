@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 
 function LoginForm() {
 
-
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -11,13 +10,12 @@ function LoginForm() {
   const [formErrors, setFormErrors] = useState({
     email: '', 
     password: '',
+    serverError: '',
   })
 
   const handleInputChange = (e) => {
     const {name, value} = e.target;
-
-    console.log('Input Change:', name, value);
-
+    // console.log('Input Change:', name, value);
     setFormData({
       ...formData, 
       [name]: value,
@@ -25,6 +23,7 @@ function LoginForm() {
   }
 
   const handleSubmit = async(e) => {
+    // stops page from reloading after submitting 
     e.preventDefault();
 
     if(!formData.email) {
@@ -48,6 +47,7 @@ function LoginForm() {
         headers: {
           'Content-Type': 'application/json',
         },
+        // have to stringigy when sending data from client to server 
         body: JSON.stringify(formData),
       });
 
