@@ -13,7 +13,10 @@ function TaskForm({ userId }) {
 
   const handleInputChange = (e) => {
     const {name, value} = e.target;
-    setTaskData({...taskData, [name]: value});
+    setTaskData({
+      ...taskData, 
+      [name]: value
+    });
   }
 
   const handleSubmit = async (e) => {
@@ -25,7 +28,7 @@ function TaskForm({ userId }) {
         headers: { 
           'Content-Type': 'application/json',
         }, 
-        body: JSON.stringify({...taskData, userId}),
+        body: JSON.stringify({...taskData}),
       });
 
       if (response.ok) {

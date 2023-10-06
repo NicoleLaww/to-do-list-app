@@ -41,17 +41,24 @@ function LoginForm() {
     const backendUrl = 'http://localhost:8080';
     
     try {
-      // console.log('Request Payload:', JSON.stringify(formData));
+      console.log('Request Payload:', JSON.stringify(formData));
       const response = await fetch(`${backendUrl}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        // have to stringigy when sending data from client to server 
+        // have to stringify when sending data from client to server 
         body: JSON.stringify(formData),
       });
 
+      console.log(response);
       if (response.ok) {
+        const data = await response.json(); 
+        if (data && data.userId) {
+          // console.log(data.userId);
+          localStorage.setItem('userId', data.userId);
+          localStorage.setItem('email', data.email);
+        }
         window.location.href = '/';
       } else {
         const data = await response.json();

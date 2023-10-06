@@ -4,15 +4,19 @@ const db = require('./db'); // connecting to PostgreSQL db
 const bcrypt = require('bcrypt'); // for passwords
 const cors = require('cors'); // allows access from front to backend 
 const { getUserByEmail, comparePasswords } = require('./dbUtils'); // helper function
+const cookieParser = require('cookie-parser');
 
 // Create an instance of the Express app
 const app = express(); // app obj will be used to define routes and configure web server 
 
+// Enables CORS for specific origins
+app.use(cors({ origin: 'http://localhost:3000'}));
+
 // Use the JSON middleware to parse JSON request bodies, incoming to server is always stringify 
 app.use(express.json());
 
-// Enables CORS for specific origins
-app.use(cors({ origin: 'http://localhost:3000'}));
+// Use cookie-parser middleware
+app.use(cookieParser());
 
 // // Route that gets the root URL for testing purposes
 // app.get('/', (req, res) => {
@@ -50,28 +54,41 @@ app.post('/login', async(req, res) => {
 
   try {
 
-    const user = await getUserByEmail(email);
+      const user = await getUserByEmail(email);
 
-    if(!user) {
-      return res.status(401).json({error: 'Invalid email..'});
-    }
-    
-    const passwordMatch = await comparePasswords(password, user.password);
+      if(!user) {
+        return res.status(401).json({error: 'Invalid email..'});
+      }
+      
+      const passwordMatch = await comparePasswords(password, user.password);
 
-    if(passwordMatch) {
-      return res.status(200).json({message: 'Successfully logged in', userId: user.id});
-    } else {
-      return res.status(401).json({error: 'Invalid email or password'});
+      console.log("user after db", user);
+      console.log('passwordsMatch', passwordMatch);
+
+      if(user && passwordMatch) {
+        // set a session cookie with the user's ID 
+        console.log("userId", user.id);
+        res.cookie('userId', user.id);
+        return res.status(200).json({message: 'Successfully logged in', userId: user.id, email: email});
+      } else {
+        return res.status(401).json({error: 'Invalid email or password'});
     }
+
   } catch(err) {
     console.log(err);
     return res.status(500).json({error: 'An error occured...', errorMessage: err.message});
   }
 })
 
+// Log out
+app.post('/logout', (req, res) => {
+  res.cookie('userId', '');
+  return res.status(200).json({message: 'Logged out'});
+});
+
 // Route to get existing to do list items from logged in user 
 app.get('/todos/:userId', async(req, res) => {
-  const userId = req.params.userId; 
+  const userId = req.cookies.userId; 
 
   try {
     const result = await db.query('SELECT * FROM tasks WHERE user_id = $1', [userId]);
@@ -85,7 +102,6 @@ app.get('/todos/:userId', async(req, res) => {
     return res.status(500).json({ error: 'An error occured while fetching your to do list.'});
   }
 })
-
 
 // Route to create a new to do list item 
 app.post('/todos', async(req, res) => {
@@ -135,7 +151,6 @@ app.put('/todos/:taskId', async(req, res) => {
   }
 })
 
-
 // Route to delete a to do list item 
 app.delete('/todos/:taskId', async(req, res) => {
   const taskId = req.params.taskId; 
@@ -159,6 +174,13 @@ app.delete('/todos/:taskId', async(req, res) => {
   }
 })
 
+// get User ID
+app.get('/getUserId', (req, res) => {
+  const user = getUserByEmail(email); 
+  console.log(user);
+
+  res.json({userId: user.id})
+})
 
 // Set the server's listening port 
 const PORT = 8080;
