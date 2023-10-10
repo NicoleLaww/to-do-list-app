@@ -55,7 +55,7 @@ function LoginForm() {
       if (response.ok) {
         const data = await response.json(); 
         if (data && data.userId) {
-          // console.log(data.userId);
+          document.cookie = `userId=${data.userId}`;
           localStorage.setItem('userId', data.userId);
           localStorage.setItem('email', data.email);
         }

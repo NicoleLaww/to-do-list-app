@@ -1,6 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
-function TaskForm({ userId }) {
+
+
+function TaskForm({ userId, fetchData }) {
   const [taskData, setTaskData] = useState({
     task: '', 
     status: '', 
@@ -8,8 +10,16 @@ function TaskForm({ userId }) {
     dueDate: '',
     userId: userId, 
   })
-
+  
   const [isFormVisible, setIsFormVisible] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (userId !== null) {
+      setIsLoading(false);
+    }
+  }, [userId]);
 
   const handleInputChange = (e) => {
     const {name, value} = e.target;
@@ -39,12 +49,16 @@ function TaskForm({ userId }) {
           status: '', 
           dueDate: '', 
           priority: '',
+          userId: userId,
         });
 
         setIsFormVisible(false);
+        
+        // fetch the updated list of tasks and update the state 
+        fetchData();
       } else {
-        const data =  await response.json();
-        console.log('Error creating task:', data.error);
+        const data = await response.json();
+        console.log('Error creating task:', data);
       }
     } catch (error) {
       console.error('Error creating task: ', error);
@@ -58,49 +72,55 @@ function TaskForm({ userId }) {
 
   return (
     <div>
-      <button onClick={toggleFormVisibility}> + </button>
-      {isFormVisible && (
-        <div>New Task:
-          <form onSubmit={handleSubmit}>
-            <div>
-              <label> Task:</label>
-              <input
-                type='text' 
-                name='task'
-                value={taskData.task}
+    {isLoading ? (
+      <div>Loading...</div>
+    ) : (
+      <div>
+        <button onClick={toggleFormVisibility}> + </button>
+        {isFormVisible && (
+          <div>New Task:
+            <form onSubmit={handleSubmit}>
+              <div>
+                <label> Task:</label>
+                <input
+                  type='text' 
+                  name='task'
+                  value={taskData.task}
+                  onChange={handleInputChange}
+                />
+            </div>
+            <div> 
+              <label> Status: </label>
+              <input 
+                type='text'
+                name='status'
+                value={taskData.status}
                 onChange={handleInputChange}
               />
+            </div>
+            <div>
+              <label>Due Date:</label>
+              <input 
+                type='date'
+                name='dueDate'
+                value={taskData.dueDate}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div>
+              <label>Priority</label>
+              <input
+                type='number'
+                name='priority'
+                value={taskData.priority}
+                onChange={handleInputChange}
+              />
+            </div>
+            <button type='submit'>Add</button>
+            </form>
           </div>
-          <div> 
-            <label> Status: </label>
-            <input 
-              type='text'
-              name='status'
-              value={taskData.status}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Due Date:</label>
-            <input 
-              type='date'
-              name='dueDate'
-              value={taskData.dueDate}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Priority</label>
-            <input
-              type='number'
-              name='priority'
-              value={taskData.priority}
-              onChange={handleInputChange}
-            />
-          </div>
-          <button type='submit'>Add</button>
-          </form>
-        </div>
+        )}
+      </div>
       )}
     </div>
   );

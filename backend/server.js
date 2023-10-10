@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt'); // for passwords
 const cors = require('cors'); // allows access from front to backend 
 const { getUserByEmail, comparePasswords } = require('./dbUtils'); // helper function
 const cookieParser = require('cookie-parser');
+const { eventWrapper } = require('@testing-library/user-event/dist/utils');
 
 // Create an instance of the Express app
 const app = express(); // app obj will be used to define routes and configure web server 
@@ -62,12 +63,12 @@ app.post('/login', async(req, res) => {
       
       const passwordMatch = await comparePasswords(password, user.password);
 
-      console.log("user after db", user);
-      console.log('passwordsMatch', passwordMatch);
+      // console.log("user after db", user);
+      // console.log('passwordsMatch', passwordMatch);
 
       if(user && passwordMatch) {
         // set a session cookie with the user's ID 
-        console.log("userId", user.id);
+        // console.log("userId", user.id);
         res.cookie('userId', user.id);
         return res.status(200).json({message: 'Successfully logged in', userId: user.id, email: email});
       } else {
@@ -89,11 +90,16 @@ app.post('/logout', (req, res) => {
 // Route to get existing to do list items from logged in user 
 app.get('/todos/:userId', async(req, res) => {
   const userId = req.cookies.userId; 
+  console.log(userId);
 
   try {
+
     const result = await db.query('SELECT * FROM tasks WHERE user_id = $1', [userId]);
-    //accessing all of the tasks, comes back as an array
+    console.log("result", result);
+    // accessing all of the tasks, comes back as an array
     const tasks = result.rows;
+
+    console.log("tasks", tasks)
 
     return res.status(200).json({tasks});
 
@@ -108,15 +114,15 @@ app.post('/todos', async(req, res) => {
 
   // coming in from the front end
   const {userId, task, status, dueDate, priority } = req.body;
-
+  console.log(req.body);
   if(!task) {
     return res.status(400).json({error: 'Task is required'});
   }
 
   try {
-    const result = await db.query('INSERT INTO tasks (user_id, task, status, due_date, priority) VALUES ($1, $2) RETURNING *', [userId, task, status, dueDate, priority]);
+    const result = await db.query('INSERT INTO tasks (user_id, task, status, due_date, priority) VALUES ($1, $2, $3, $4, $5) RETURNING *', [userId, task, status, dueDate, priority]);
     const newToDo = result.rows[0];
-    return res.send(200).json({message: 'To Do item successfully created', todo: newToDo});
+    return res.status(200).json({message: 'To Do item successfully created', todo: newToDo});
     
   } catch (err) {
     console.log(err);
@@ -175,12 +181,13 @@ app.delete('/todos/:taskId', async(req, res) => {
 })
 
 // get User ID
-app.get('/getUserId', (req, res) => {
-  const user = getUserByEmail(email); 
-  console.log(user);
+// app.get('/getUserId', (req, res) => {
+//   const email = req.body.email;
+//   const user = getUserByEmail(email); 
+//   console.log(user);
 
-  res.json({userId: user.id})
-})
+//   res.json({userId: user.id})
+// })
 
 // Set the server's listening port 
 const PORT = 8080;
