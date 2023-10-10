@@ -8,12 +8,13 @@ function TaskForm({ userId, fetchData }) {
     status: '', 
     priority: '', 
     dueDate: '',
-    userId: userId, 
   })
   
   const [isFormVisible, setIsFormVisible] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
+
+  // console.log(userId);
 
   useEffect(() => {
     if (userId !== null) {
@@ -29,6 +30,8 @@ function TaskForm({ userId, fetchData }) {
     });
   }
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault(); 
 
@@ -37,8 +40,12 @@ function TaskForm({ userId, fetchData }) {
         method: 'POST', 
         headers: { 
           'Content-Type': 'application/json',
+          'Cookie': document.cookie, 
         }, 
-        body: JSON.stringify({...taskData}),
+        body: JSON.stringify({
+          ...taskData,
+          userId: userId,
+        }),
       });
 
       if (response.ok) {
@@ -49,11 +56,12 @@ function TaskForm({ userId, fetchData }) {
           status: '', 
           dueDate: '', 
           priority: '',
-          userId: userId,
         });
 
         setIsFormVisible(false);
-        
+
+        console.log(document.cookie)
+
         // fetch the updated list of tasks and update the state 
         fetchData();
       } else {

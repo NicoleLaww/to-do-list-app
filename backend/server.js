@@ -5,13 +5,15 @@ const bcrypt = require('bcrypt'); // for passwords
 const cors = require('cors'); // allows access from front to backend 
 const { getUserByEmail, comparePasswords } = require('./dbUtils'); // helper function
 const cookieParser = require('cookie-parser');
-const { eventWrapper } = require('@testing-library/user-event/dist/utils');
 
 // Create an instance of the Express app
 const app = express(); // app obj will be used to define routes and configure web server 
 
 // Enables CORS for specific origins
-app.use(cors({ origin: 'http://localhost:3000'}));
+app.use(cors({ 
+  origin: 'http://localhost:3000', 
+  credentials: true,
+}));
 
 // Use the JSON middleware to parse JSON request bodies, incoming to server is always stringify 
 app.use(express.json());
@@ -46,7 +48,7 @@ app.post('/register', async(req, res)=> {
 
 // Route that logs in 
 app.post('/login', async(req, res) => {
-  console.log('Received request: ', req.body);
+  // console.log('Received request: ', req.body);
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -89,19 +91,21 @@ app.post('/logout', (req, res) => {
 
 // Route to get existing to do list items from logged in user 
 app.get('/todos/:userId', async(req, res) => {
-  const userId = req.cookies.userId; 
+
+  const userId = req.cookies.userId;
+
   console.log(userId);
 
   try {
 
     const result = await db.query('SELECT * FROM tasks WHERE user_id = $1', [userId]);
-    console.log("result", result);
+    // console.log("result", result);
     // accessing all of the tasks, comes back as an array
     const tasks = result.rows;
 
     console.log("tasks", tasks)
 
-    return res.status(200).json({tasks});
+    return res.status(200).json({tasks: tasks});
 
   } catch (err) {
     console.log(err);
@@ -179,15 +183,6 @@ app.delete('/todos/:taskId', async(req, res) => {
     return res.status(500).json({error: 'An error occured while deleting task'});
   }
 })
-
-// get User ID
-// app.get('/getUserId', (req, res) => {
-//   const email = req.body.email;
-//   const user = getUserByEmail(email); 
-//   console.log(user);
-
-//   res.json({userId: user.id})
-// })
 
 // Set the server's listening port 
 const PORT = 8080;
