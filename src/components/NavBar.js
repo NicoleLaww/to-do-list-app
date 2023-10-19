@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 
-
-function NavBar({userId}) {
+function NavBar({userId, updateTasks}) {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -21,6 +20,9 @@ function NavBar({userId}) {
       await axios.post('http://localhost:8080/logout');
 
       setIsLoggedIn(false);
+
+      updateTasks([]);
+    
 
     } catch (err) {
       console.error('Logout failed:', err)

@@ -138,16 +138,19 @@ app.post('/todos', async(req, res) => {
 // Route to update a to do list item 
 app.put('/todos/:taskId', async(req, res) => {
   const taskId = req.params.taskId;
+  console.log(taskId);
+
+  const userId = req.cookies.userId;
 
   if(!taskId) {
     return res.status(400).json({error: 'Task ID required'});
   }
 
-  const { userId, task, status, dueDate, priority } = req.body;
+  const {task, status, dueDate, priority } = req.body;
 
   try {
     const result = await db.query(
-      'UPDATE tasks SET user_id = $1 task = $2, status = $3, due_date = $4, priority = $5 WHERE id = $6', [userId, task, status, dueDate, priority, taskId]
+      'UPDATE tasks SET user_id = $1, task = $2, status = $3, due_date = $4, priority = $5 WHERE id = $6', [userId, task, status, dueDate, priority, taskId]
     );
     
     if (result.rowCount === 1) {

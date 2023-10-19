@@ -9,6 +9,11 @@ import ToDoList from './components/ToDoList';
 function App() {
 
 const [storedUserId, setStoredUserId] = useState(null);
+const [tasks, setTasks] = useState([]);
+
+const updateTasks = (newTasks) => {
+  setTasks(newTasks);
+}
 
 useEffect(() => {
   const fetchDataFromLocalStorage = async () => {
@@ -27,9 +32,9 @@ useEffect(() => {
         <h1>
           <a href='/'>The To Do List App</a>
         </h1>
-        <NavBar userId={storedUserId}/>
+        <NavBar userId={storedUserId} updateTasks={updateTasks}/>
         <Routes>
-            <Route path="/" element={<ToDoList userId={storedUserId}/>}/> 
+            <Route path="/" element={<ToDoList userId={storedUserId} tasks={tasks} updateTasks={updateTasks}/>}/> 
             <Route path="/register" element={<RegistrationForm />} /> 
             <Route path="/login" element={<Login />} />
         </Routes>
