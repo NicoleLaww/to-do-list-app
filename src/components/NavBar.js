@@ -1,16 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import axios from 'axios';
 
-function NavBar({userId, updateTasks}) {
-
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  // function inside useEffect is executed when dependencies [arr] changes
-  useEffect(() => {
-    if (userId !== null) {
-      setIsLoggedIn(true);
-    }
-  }, [userId]);
+function NavBar({userId, updateTasks, isLoggedIn, updateIsLoggedIn}) {
 
   async function handleLogOut() {
 
@@ -19,7 +10,7 @@ function NavBar({userId, updateTasks}) {
 
       await axios.post('http://localhost:8080/logout');
 
-      setIsLoggedIn(false);
+      updateIsLoggedIn(null);
 
       updateTasks([]);
     

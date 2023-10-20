@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from 'react';
 
-
-
 function TaskForm({ userId, fetchData }) {
   const [taskData, setTaskData] = useState({
     task: '', 
@@ -29,8 +27,6 @@ function TaskForm({ userId, fetchData }) {
       [name]: value
     });
   }
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault(); 
@@ -81,7 +77,7 @@ function TaskForm({ userId, fetchData }) {
   return (
     <div>
     {isLoading ? (
-      <div>Loading...</div>
+      <div></div>
     ) : (
       <div>
         <button onClick={toggleFormVisibility}> + </button>

@@ -2,11 +2,13 @@ import React, { useState, useEffect} from 'react';
 import TaskForm from './TaskForm';
 import EditTaskForm from './EditTaskForm';
 
-function ToDoList({ userId, tasks, updateTasks }) {
+function ToDoList({ userId, tasks, updateTasks, isLoggedIn, updateIsLoggedIn }) {
   // [] letting us know we are expecting a list of things 
 
   const [editTask, setEditTask] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(userId);
+
 
   // console.log(userId);
 
@@ -41,7 +43,17 @@ function ToDoList({ userId, tasks, updateTasks }) {
   };
 
   useEffect(() => {
-      fetchData();
+    if (userId) {
+      updateIsLoggedIn(userId);
+    } else {
+      updateIsLoggedIn(null);
+    }
+  }, [userId]);
+
+  console.log(isLoggedIn)
+
+  useEffect(() => {
+    fetchData();
      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
@@ -109,28 +121,34 @@ function ToDoList({ userId, tasks, updateTasks }) {
 
   return (
     <div>
-      <h2>Things to do... </h2>
-      <TaskForm userId={userId} fetchData={fetchData}/>
-      <ul>
-        {tasks.map((task) => {
-          return <li key={task.id}> 
-                    Task: {task.task} <br/>
-                    Status: {task.status} <br/>
-                    Due Date: {task.due_date} <br/>
-                    Priority: {task.priority} <br/>
-                    <button type='submit' onClick={() => handleEdit(task.id)}>Edit</button>
-                    <button type='submit' onClick={() => handleDelete(task.id)}>Delete</button>
-                  </li>
+      {!isLoggedIn ? (
+        <div></div>
+      ) : (
+        <div>
+          <h2>Things to do... </h2>
+          <TaskForm userId={userId} fetchData={fetchData}/>
+          <ul>
+            {tasks.map((task) => {
+              return <li key={task.id}> 
+                        Task: {task.task} <br/>
+                        Status: {task.status} <br/>
+                        Due Date: {task.due_date} <br/>
+                        Priority: {task.priority} <br/>
+                        <button type='submit' onClick={() => handleEdit(task.id)}>Edit</button>
+                        <button type='submit' onClick={() => handleDelete(task.id)}>Delete</button>
+                      </li>
 
-        })}
-      </ul>
-      {showEditForm && editTask && (
-        <EditTaskForm
-          taskId = {editTask.id}
-          editTask = {editTask}
-          onUpdate = {handleUpdateTask}
-          onCancel = {handleCancelTask}
-        />
+            })}
+          </ul>
+          {showEditForm && editTask && (
+            <EditTaskForm
+              taskId = {editTask.id}
+              editTask = {editTask}
+              onUpdate = {handleUpdateTask}
+              onCancel = {handleCancelTask}
+            />
+          )}
+        </div>
       )}
     </div>
   );

@@ -118,13 +118,16 @@ app.post('/todos', async(req, res) => {
 
   // coming in from the front end
   const {userId, task, status, dueDate, priority } = req.body;
+
+  const formattedDueDate = dueDate.substring(0, 10);
+
   console.log(req.body);
   if(!task) {
     return res.status(400).json({error: 'Task is required'});
   }
 
   try {
-    const result = await db.query('INSERT INTO tasks (user_id, task, status, due_date, priority) VALUES ($1, $2, $3, $4, $5) RETURNING *', [userId, task, status, dueDate, priority]);
+    const result = await db.query('INSERT INTO tasks (user_id, task, status, due_date, priority) VALUES ($1, $2, $3, $4, $5) RETURNING *', [userId, task, status, formattedDueDate, priority]);
     const newToDo = result.rows[0];
     return res.status(200).json({message: 'To Do item successfully created', todo: newToDo});
     
@@ -147,10 +150,13 @@ app.put('/todos/:taskId', async(req, res) => {
   }
 
   const {task, status, dueDate, priority } = req.body;
+  console.log(req.body);
+  const formattedDueDate = dueDate.substring(0, 10);
+
 
   try {
     const result = await db.query(
-      'UPDATE tasks SET user_id = $1, task = $2, status = $3, due_date = $4, priority = $5 WHERE id = $6', [userId, task, status, dueDate, priority, taskId]
+      'UPDATE tasks SET user_id = $1, task = $2, status = $3, due_date = $4, priority = $5 WHERE id = $6', [userId, task, status, formattedDueDate, priority, taskId]
     );
     
     if (result.rowCount === 1) {

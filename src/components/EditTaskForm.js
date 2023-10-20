@@ -2,7 +2,10 @@ import React, {useState} from 'react';
 
 function EditTaskForm({taskId, editTask, onUpdate, onCancel}) {
 
-const [editedTask, setEditedTask] = useState({...editTask});
+const [editedTask, setEditedTask] = useState({
+  ...editTask, 
+  dueDate: editTask.dueDate ? editTask.dueDate.substring(0,10) : null,
+});
 
 
 const handleInputChange = (e) => {
