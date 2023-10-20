@@ -52,7 +52,9 @@ useEffect(() => {
           <div className="right">
             <h2 className='welcome'> Welcome to My Digital To Do List Notebook </h2>
             <p> Welcome to my digital to-do list notebook, where tasks, goals, and dreams find a home on the web. 
-              Just like an old-fashioned journal, this web application helps you jot down your daily to-dos and organize your life with ease. <br></br>
+              Just like an old-fashioned journal, this web application helps you jot down your daily to-dos and organize your life with ease. 
+              <br></br>
+              <br></br>
               In this virtual notebook, you can create, update, and check off tasks as you complete them. It's your personal space for productivity, 
               and it's ready to accompany you on your journey to achieve your goals. 
               <br></br>
@@ -68,11 +70,7 @@ useEffect(() => {
               <br></br>
               Start writing down your tasks, prioritizing your objectives, and turning your dreams into reality, one checked-off item at a
               time. Let's begin this journey of productivity and organization together. Happy note-taking!
-              <br></br>
-              <br></br>
-              Sincerly, 
-              <br></br>
-              Nicole 
+          
             </p>
           </div>
           <Routes>

@@ -1,8 +1,14 @@
+@font-face {
+    font-family: 'CaveatRegular';
+    src: local('Caveat-Regular'),
+        url('./font/Caveat-Regular.ttf') format('truetype');
+}
+
 body {
   overflow: hidden;
   margin: 0;
   padding: 0;
-  font-family: serif;
+  font-family: 'CaveatRegular';
 }
 
 .background {
@@ -52,4 +58,8 @@ body {
 .welcome {
   margin: 0em;
 
+}
+
+a {
+  color: black;
 }
